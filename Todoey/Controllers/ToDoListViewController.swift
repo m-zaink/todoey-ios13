@@ -197,7 +197,7 @@ extension ToDoListViewController {
             title: "Delete") { (deleteAction, uiView, success) in
             
             let confirmDeleteAlert = UIAlertController(
-                title: "Are you sure you want to delete?",
+                title: "Are you sure you want to delete this ToDo?",
                 message: self.todos[indexPath.row].title,
                 preferredStyle: .actionSheet
             )

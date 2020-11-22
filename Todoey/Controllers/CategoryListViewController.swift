@@ -182,7 +182,7 @@ extension CategoryListViewController {
             title: "Delete") { (deleteAction, uiView, success) in
             
             let confirmDeleteAlert = UIAlertController(
-                title: "Are you sure you want to delete?",
+                title: "Are you sure you want to delete this category?",
                 message: self.categories[indexPath.row].name,
                 preferredStyle: .actionSheet
             )

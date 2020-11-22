@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
     static let toDoListCellReuseIdentifier = "ToDoListCell"
@@ -17,9 +18,11 @@ class ToDoListViewController: UITableViewController {
     
     var todos: [ToDo] = []
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        refreshToDosFromUserDefaults()
+        refreshToDosFromPersistentStorage()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
@@ -57,8 +60,14 @@ class ToDoListViewController: UITableViewController {
                     (addTodoAction) in
                     
                     if let todoTitle = todoTextField?.text, todoTitle.isNotEmpty {
-                        self.todos.append(ToDo(title: todoTitle))
-                        self.saveCurrentStateOfToDosToUserDefaults()
+                        let todo = ToDo(context: self.context)
+                        
+                        todo.title = todoTitle
+                        
+                        self.todos.append(todo)
+                        
+                        self.updateToDosInPersistentStorage()
+                        
                         self.tableView.insertRows(
                             at: [
                                 IndexPath(
@@ -80,33 +89,23 @@ class ToDoListViewController: UITableViewController {
         )
     }
     
-    func saveCurrentStateOfToDosToUserDefaults() {
-        if let toDoPListPath = ToDoListViewController.toDoPListPath {
-            let encoder = PropertyListEncoder()
-            
-            do {
-                let encodedData = try encoder.encode(todos)
-                try encodedData.write(
-                    to: toDoPListPath
-                )
-            } catch {
-                print(error)
+    func updateToDosInPersistentStorage() {
+        do {
+            if context.hasChanges {
+                try context.save()
             }
+        } catch {
+            print(error)
         }
     }
     
-    func refreshToDosFromUserDefaults() {
-        if let toDoPListPath = ToDoListViewController.toDoPListPath {
-            let decoder = PropertyListDecoder()
-            
-            do {
-                let todoEncodedData = try Data(contentsOf: toDoPListPath)
-                todos = try decoder.decode(
-                    [ToDo].self, from: todoEncodedData
-                )
-            } catch {
-                print(error)
-            }
+    func refreshToDosFromPersistentStorage() {
+        let request: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+        
+        do {
+            todos = try context.fetch(request)
+        } catch {
+            print(error)
         }
     }
 }
@@ -157,8 +156,9 @@ extension ToDoListViewController {
                     title: "Yes",
                     style: .destructive,
                     handler: { (deleteAction) in
+                        self.context.delete(self.todos[indexPath.row])
                         self.todos.remove(at: indexPath.row)
-                        self.saveCurrentStateOfToDosToUserDefaults()
+                        self.updateToDosInPersistentStorage()
                         success(true)
                         self.tableView.deleteRows(
                             at: [indexPath],
@@ -198,7 +198,7 @@ extension ToDoListViewController {
     ) {
         todos[indexPath.row].isDone = !todos[indexPath.row].isDone
         
-        saveCurrentStateOfToDosToUserDefaults()
+        updateToDosInPersistentStorage()
         
         tableView.reloadRows(
             at: [

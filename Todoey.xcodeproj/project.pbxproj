@@ -15,6 +15,7 @@
 		0A0D2782256A53FE003CC51E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A0D2780256A53FE003CC51E /* LaunchScreen.storyboard */; };
 		0ACB720B256A809F00159CF4 /* TodoeyDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0ACB7209256A809F00159CF4 /* TodoeyDataModel.xcdatamodeld */; };
 		0AFFABD2256ABE2E00983519 /* StringX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AFFABD1256ABE2E00983519 /* StringX.swift */; };
+		0AFFABD8256ACE0100983519 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AFFABD7256ACE0100983519 /* CategoryListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		0A0D2783256A53FE003CC51E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0ACB720A256A809F00159CF4 /* TodoeyDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TodoeyDataModel.xcdatamodel; sourceTree = "<group>"; };
 		0AFFABD1256ABE2E00983519 /* StringX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringX.swift; sourceTree = "<group>"; };
+		0AFFABD7256ACE0100983519 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				0A0D2779256A53FD003CC51E /* ToDoListViewController.swift */,
+				0AFFABD7256ACE0100983519 /* CategoryListViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A0D277A256A53FD003CC51E /* ToDoListViewController.swift in Sources */,
+				0AFFABD8256ACE0100983519 /* CategoryListViewController.swift in Sources */,
 				0ACB720B256A809F00159CF4 /* TodoeyDataModel.xcdatamodeld in Sources */,
 				0AFFABD2256ABE2E00983519 /* StringX.swift in Sources */,
 				0A0D2776256A53FD003CC51E /* AppDelegate.swift in Sources */,

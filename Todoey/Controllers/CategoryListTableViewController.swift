@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CategoryListTableViewController.swift
 //  Todoey
 //
 //  Created by Mohammed Sadiq on 22/11/20.
@@ -8,39 +8,35 @@
 import UIKit
 import CoreData
 
-class ToDoListViewController: UITableViewController {
-    static let toDoListCellReuseIdentifier = "ToDoListCell"
+class CategoryListViewController: UITableViewController {
+    static let categoryListCellReuseIdentifier = "CategoryListCell"
+    static let segueToToDoListVC = "SegueToToDoListVC"
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    var parentCategory: Category! {
-        didSet {
-            retrieveAllToDosFromPersistentStorage()
-        }
-    }
-    
-    var todos: [ToDo] = []
+    var categories: [Category] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         retrieveAllToDosFromPersistentStorage()
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
+
     
-    @IBAction func onAddTodoItemPressed(
-        _ sender: UIBarButtonItem
-    ) {
-        var todoTextField: UITextField?
+    @IBAction func onAddButtonPressed(_ sender: UIBarButtonItem) {
+        var categoryTextField: UITextField?
         
         let addToDoItemAlert = UIAlertController(
-            title: "Add a ToDoey Item",
+            title: "Add a ToDoey Category",
             message: "",
             preferredStyle: .alert
         )
         
         addToDoItemAlert.addTextField {
             (textField) in
-            textField.placeholder = "ToDo goes here"
+            textField.placeholder = "Category name goes here"
             textField.autocapitalizationType = .sentences
-            todoTextField = textField
+            categoryTextField = textField
         }
         
         addToDoItemAlert.addAction(
@@ -58,20 +54,19 @@ class ToDoListViewController: UITableViewController {
                 handler: {
                     (addTodoAction) in
                     
-                    if let todoTitle = todoTextField?.text, todoTitle.isNotEmpty {
-                        let todo = ToDo(context: self.context)
+                    if let categoryName = categoryTextField?.text, categoryName.isNotEmpty {
+                        let category = Category(context: self.context)
                         
-                        todo.title = todoTitle
-                        todo.parentCategory = self.parentCategory
+                        category.name = categoryName
                         
-                        self.todos.append(todo)
+                        self.categories.append(category)
                         
-                        self.commitToDosInPersistentStorage()
+                        self.commitCategoriesInPersistentStorage()
                         
                         self.tableView.insertRows(
                             at: [
                                 IndexPath(
-                                    row: self.todos.count - 1,
+                                    row: self.categories.count - 1,
                                     section: 0
                                 )
                             ],
@@ -89,7 +84,15 @@ class ToDoListViewController: UITableViewController {
         )
     }
     
-    func commitToDosInPersistentStorage() {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == CategoryListViewController.segueToToDoListVC {
+            if let toDoListVC = segue.destination as? ToDoListViewController, let selectIndexPath = tableView.indexPathForSelectedRow {
+                toDoListVC.parentCategory = categories[selectIndexPath.row]
+            }
+        }
+    }
+    
+    func commitCategoriesInPersistentStorage() {
         do {
             if context.hasChanges {
                 try context.save()
@@ -100,87 +103,69 @@ class ToDoListViewController: UITableViewController {
     }
     
     func retrieveAllToDosFromPersistentStorage() {
-        let allToDosRequest: NSFetchRequest<ToDo> = ToDo.fetchRequest()
-        allToDosRequest.predicate = categoryPredicate
-        
-        retrieveToDosFromPersistentStorage(request: allToDosRequest)
+        let allCategoriesRequest: NSFetchRequest<Category> = Category.fetchRequest()
+        retrieveCategoriesFromPersistentStorage(request: allCategoriesRequest)
     }
     
     func retrieveAllToDosFromPersistentStroage(baseOn searchWord: String) {
-        let searchQueryRequest: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+        let searchQueryRequest: NSFetchRequest<Category> = Category.fetchRequest()
         
-        searchQueryRequest.predicate = NSCompoundPredicate(
-            andPredicateWithSubpredicates: [
-                categoryPredicate,
-                NSPredicate(
-                    format: "title CONTAINS[cd] %@",
-                    searchWord
-                )
-            ]
+        searchQueryRequest.predicate = NSPredicate(
+            format: "title CONTAINS[cd] %@",
+            searchWord
         )
         
         searchQueryRequest.sortDescriptors = [
             NSSortDescriptor(key: "title", ascending: true)
         ]
         
-        retrieveToDosFromPersistentStorage(request: searchQueryRequest)
+        retrieveCategoriesFromPersistentStorage(request: searchQueryRequest)
     }
     
-    func retrieveToDosFromPersistentStorage(request: NSFetchRequest<ToDo>) {
-
+    func retrieveCategoriesFromPersistentStorage(request: NSFetchRequest<Category>) {
         do {
-            todos = try context.fetch(request)
+            categories = try context.fetch(request)
         } catch {
             print(error)
         }
     }
-    
-    var categoryPredicate: NSPredicate {
-        return NSPredicate(
-            format: "parentCategory.name MATCHES %@",
-            parentCategory.name!
-        )
-    }
 }
 
 // MARK: - TableViewDataSource
-extension ToDoListViewController {
-    override func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
-        return todos.count
+extension CategoryListViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categories.count
     }
     
     override func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: ToDoListViewController.toDoListCellReuseIdentifier,
+        let categoryCell = tableView.dequeueReusableCell(
+            withIdentifier: CategoryListViewController.categoryListCellReuseIdentifier,
             for: indexPath
         )
         
-        cell.textLabel?.text = todos[indexPath.row].title
-        cell.accessoryType = todos[indexPath.row].isDone ? .checkmark : .none
+        categoryCell.textLabel?.text = categories[indexPath.row].name
         
-        return cell
+        return categoryCell
     }
 }
 
 // MARK: - TableViewUIDelegate
-extension ToDoListViewController {
+extension CategoryListViewController {
     override func tableView(
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        todos[indexPath.row].isDone = !todos[indexPath.row].isDone
+        performSegue(
+            withIdentifier: CategoryListViewController.segueToToDoListVC,
+            sender: self
+        )
         
-        commitToDosInPersistentStorage()
-        
-        tableView.reloadRows(
-            at: [indexPath],
-            with: .none
+        tableView.deselectRow(
+            at: indexPath,
+            animated: true
         )
     }
     
@@ -198,7 +183,7 @@ extension ToDoListViewController {
             
             let confirmDeleteAlert = UIAlertController(
                 title: "Are you sure you want to delete?",
-                message: self.todos[indexPath.row].title,
+                message: self.categories[indexPath.row].name,
                 preferredStyle: .actionSheet
             )
             
@@ -207,9 +192,9 @@ extension ToDoListViewController {
                     title: "Yes",
                     style: .destructive,
                     handler: { (deleteAction) in
-                        self.context.delete(self.todos[indexPath.row])
-                        self.todos.remove(at: indexPath.row)
-                        self.commitToDosInPersistentStorage()
+                        self.context.delete(self.categories[indexPath.row])
+                        self.categories.remove(at: indexPath.row)
+                        self.commitCategoriesInPersistentStorage()
                         success(true)
                         self.tableView.deleteRows(
                             at: [indexPath],
@@ -243,36 +228,3 @@ extension ToDoListViewController {
         )
     }
 }
-
-extension ToDoListViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let searchWord = searchBar.text, searchWord.isNotEmpty {
-            retrieveAllToDosFromPersistentStroage(baseOn: searchWord)
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        retrieveAllToDosFromPersistentStorage()
-        DispatchQueue.main.async {
-            searchBar.text = ""
-            self.tableView.reloadData()
-        }
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let searchWord = searchBar.text, searchWord.isNotEmpty {
-            retrieveAllToDosFromPersistentStroage(baseOn: searchWord)
-        } else {
-            retrieveAllToDosFromPersistentStorage()
-        }
-        
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-}
-

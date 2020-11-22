@@ -13,7 +13,7 @@ class ToDoListViewController: UITableViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var parentCategory: Category! {
-        didSet {
+        didSet(parentCategory) {
             retrieveAllToDosFromPersistentStorage()
         }
     }
@@ -22,7 +22,7 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        retrieveAllToDosFromPersistentStorage()
+        navigationItem.title = parentCategory.name
     }
     
     @IBAction func onAddTodoItemPressed(

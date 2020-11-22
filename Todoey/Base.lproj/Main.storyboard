@@ -11,7 +11,7 @@
         <!--Todoey-->
         <scene sceneID="5so-zc-8Sw">
             <objects>
-                <tableViewController id="5gY-bT-oTX" customClass="TodoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="5gY-bT-oTX" customClass="ToDoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="tSD-4o-CpH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -40,7 +40,13 @@
                             <outlet property="delegate" destination="5gY-bT-oTX" id="qZ2-3R-ys7"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Todoey" id="rTq-ZV-mfv"/>
+                    <navigationItem key="navigationItem" title="Todoey" id="rTq-ZV-mfv">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="bC0-KJ-H6M">
+                            <connections>
+                                <action selector="onAddTodoItemPressed:" destination="5gY-bT-oTX" id="fAb-W9-jOR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M0K-Ly-RGf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

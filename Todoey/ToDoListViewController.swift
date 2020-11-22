@@ -51,9 +51,10 @@ class ToDoListViewController: UITableViewController {
                     
                     if let todo = todoTextField?.text, todo.isNotEmpty {
                         self.todos.append(todo)
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
+                        self.tableView.insertRows(
+                            at: [IndexPath(row: self.todos.count - 1, section: 0)],
+                            with: .automatic
+                        )
                     }
                 }
             )
@@ -65,6 +66,8 @@ class ToDoListViewController: UITableViewController {
             completion: nil
         )
     }
+    
+    
 }
 
 // MARK: - TableViewDataSource
@@ -133,10 +136,11 @@ extension ToDoListViewController {
                     style: .destructive,
                     handler: { (deleteAction) in
                         self.todos.remove(at: indexPath.row)
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
                         success(true)
+                        self.tableView.deleteRows(
+                            at: [indexPath],
+                            with: .left
+                        )
                     }
                 )
             )

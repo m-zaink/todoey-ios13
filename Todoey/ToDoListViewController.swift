@@ -16,11 +16,10 @@ class ToDoListViewController: UITableViewController {
         "Keep talking"
     ]
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todos.count
-    }
     
-    @IBAction func onAddTodoItemPressed(_ sender: UIBarButtonItem) {
+    @IBAction func onAddTodoItemPressed(
+        _ sender: UIBarButtonItem
+    ) {
         var todoTextField: UITextField?
         
         let addTodoItemAlert = UIAlertController(
@@ -66,8 +65,14 @@ class ToDoListViewController: UITableViewController {
             completion: nil
         )
     }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+}
+
+// MARK: - TableViewDataSource
+extension ToDoListViewController {
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: ToDoListViewController.toDoListCellReuseIdentifier,
             for: indexPath
@@ -78,7 +83,10 @@ class ToDoListViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         let selectedCell = tableView.cellForRow(
             at: indexPath
         )
@@ -94,8 +102,21 @@ class ToDoListViewController: UITableViewController {
             animated: true
         )
     }
+}
+
+// MARK: - TableViewUIDelegate
+extension ToDoListViewController {
+    override func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
+        return todos.count
+    }
     
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive,
             title: "Delete") { (deleteAction, uiView, success) in

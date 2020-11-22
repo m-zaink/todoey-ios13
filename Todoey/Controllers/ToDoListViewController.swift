@@ -37,6 +37,7 @@ class ToDoListViewController: UITableViewController {
         addTodoItemAlert.addTextField {
             (textField) in
             textField.placeholder = "ToDo goes here"
+            textField.autocapitalizationType = .sentences
             todoTextField = textField
         }
         

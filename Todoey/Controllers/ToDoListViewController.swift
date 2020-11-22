@@ -16,7 +16,7 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        refreshToDosFromPersistentStorage()
+        retrieveToDosFromPersistentStorage()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
@@ -60,7 +60,7 @@ class ToDoListViewController: UITableViewController {
                         
                         self.todos.append(todo)
                         
-                        self.updateToDosInPersistentStorage()
+                        self.commitToDosInPersistentStorage()
                         
                         self.tableView.insertRows(
                             at: [
@@ -83,7 +83,7 @@ class ToDoListViewController: UITableViewController {
         )
     }
     
-    func updateToDosInPersistentStorage() {
+    func commitToDosInPersistentStorage() {
         do {
             if context.hasChanges {
                 try context.save()
@@ -93,7 +93,7 @@ class ToDoListViewController: UITableViewController {
         }
     }
     
-    func refreshToDosFromPersistentStorage() {
+    func retrieveToDosFromPersistentStorage() {
         let request: NSFetchRequest<ToDo> = ToDo.fetchRequest()
         
         do {
@@ -133,6 +133,20 @@ extension ToDoListViewController {
 extension ToDoListViewController {
     override func tableView(
         _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        todos[indexPath.row].isDone = !todos[indexPath.row].isDone
+        
+        commitToDosInPersistentStorage()
+        
+        tableView.reloadRows(
+            at: [indexPath],
+            with: .none
+        )
+    }
+    
+    override func tableView(
+        _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
@@ -152,7 +166,7 @@ extension ToDoListViewController {
                     handler: { (deleteAction) in
                         self.context.delete(self.todos[indexPath.row])
                         self.todos.remove(at: indexPath.row)
-                        self.updateToDosInPersistentStorage()
+                        self.commitToDosInPersistentStorage()
                         success(true)
                         self.tableView.deleteRows(
                             at: [indexPath],
@@ -183,22 +197,6 @@ extension ToDoListViewController {
             actions: [
                 deleteAction
             ]
-        )
-    }
-    
-    override func tableView(
-        _ tableView: UITableView,
-        didSelectRowAt indexPath: IndexPath
-    ) {
-        todos[indexPath.row].isDone = !todos[indexPath.row].isDone
-        
-        updateToDosInPersistentStorage()
-        
-        tableView.reloadRows(
-            at: [
-                indexPath
-            ],
-            with: .none
         )
     }
 }

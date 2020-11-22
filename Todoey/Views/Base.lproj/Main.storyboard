@@ -49,7 +49,7 @@
         <!--To Do List View Controller-->
         <scene sceneID="5so-zc-8Sw">
             <objects>
-                <tableViewController id="5gY-bT-oTX" customClass="ToDoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="5gY-bT-oTX" customClass="ToDoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="tSD-4o-CpH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -111,6 +111,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="interactivePopGestureRecognizer" value="YES"/>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <segue destination="NcE-SX-3as" kind="relationship" relationship="rootViewController" id="EDU-j2-XYe"/>
                     </connections>

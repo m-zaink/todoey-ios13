@@ -21,7 +21,7 @@ class CategoryListViewController: UITableViewController {
         retrieveAllToDosFromPersistentStorage()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
-
+    
     
     @IBAction func onAddButtonPressed(_ sender: UIBarButtonItem) {
         var categoryTextField: UITextField?

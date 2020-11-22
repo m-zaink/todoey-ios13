@@ -9,18 +9,15 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     static let toDoListCellReuseIdentifier = "ToDoListCell"
+    static let toDoListUserDefaultsKey = "ToDoListUserDefaultsKey"
     
-    var todos = [
-        "Bring Super Siyan",
-        "Eat more healthy food",
-        "Keep talking"
-    ]
+    var todos: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        refreshToDosFromUserDefaults()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
-    
     
     @IBAction func onAddTodoItemPressed(
         _ sender: UIBarButtonItem
@@ -56,8 +53,14 @@ class ToDoListViewController: UITableViewController {
                     
                     if let todo = todoTextField?.text, todo.isNotEmpty {
                         self.todos.append(todo)
+                        self.saveCurrentStateOfToDosToUserDefaults()
                         self.tableView.insertRows(
-                            at: [IndexPath(row: self.todos.count - 1, section: 0)],
+                            at: [
+                                IndexPath(
+                                    row: self.todos.count - 1,
+                                    section: 0
+                                )
+                            ],
                             with: .automatic
                         )
                     }
@@ -72,7 +75,20 @@ class ToDoListViewController: UITableViewController {
         )
     }
     
+    func saveCurrentStateOfToDosToUserDefaults() {
+        UserDefaults.standard.setValue(
+            todos,
+            forKey: ToDoListViewController.toDoListUserDefaultsKey
+        )
+    }
     
+    func refreshToDosFromUserDefaults() {
+        if let todosFromUserDefaults = UserDefaults.standard.object(
+            forKey: ToDoListViewController.toDoListUserDefaultsKey
+        ) as? [String] {
+            todos = todosFromUserDefaults
+        }
+    }
 }
 
 // MARK: - TableViewDataSource
@@ -141,6 +157,7 @@ extension ToDoListViewController {
                     style: .destructive,
                     handler: { (deleteAction) in
                         self.todos.remove(at: indexPath.row)
+                        self.saveCurrentStateOfToDosToUserDefaults()
                         success(true)
                         self.tableView.deleteRows(
                             at: [indexPath],

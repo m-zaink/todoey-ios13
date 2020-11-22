@@ -10,15 +10,9 @@ import CoreData
 
 class ToDoListViewController: UITableViewController {
     static let toDoListCellReuseIdentifier = "ToDoListCell"
-    static let toDoListUserDefaultsKey = "ToDoListUserDefaultsKey"
-    static let toDoPListPath = FileManager.default.urls(
-        for: .documentDirectory,
-        in: .userDomainMask
-    ).first?.appendingPathComponent("ToDos.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var todos: [ToDo] = []
-    
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,20 +25,20 @@ class ToDoListViewController: UITableViewController {
     ) {
         var todoTextField: UITextField?
         
-        let addTodoItemAlert = UIAlertController(
+        let addToDoItemAlert = UIAlertController(
             title: "Add a ToDoey Item",
             message: "",
             preferredStyle: .alert
         )
         
-        addTodoItemAlert.addTextField {
+        addToDoItemAlert.addTextField {
             (textField) in
             textField.placeholder = "ToDo goes here"
             textField.autocapitalizationType = .sentences
             todoTextField = textField
         }
         
-        addTodoItemAlert.addAction(
+        addToDoItemAlert.addAction(
             UIAlertAction(
                 title: "Cancel",
                 style: .cancel,
@@ -52,7 +46,7 @@ class ToDoListViewController: UITableViewController {
             )
         )
         
-        addTodoItemAlert.addAction(
+        addToDoItemAlert.addAction(
             UIAlertAction(
                 title: "Add ToDo",
                 style: .default,
@@ -83,7 +77,7 @@ class ToDoListViewController: UITableViewController {
         )
         
         present(
-            addTodoItemAlert,
+            addToDoItemAlert,
             animated: true,
             completion: nil
         )

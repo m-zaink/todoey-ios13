@@ -16,6 +16,11 @@ class ToDoListViewController: UITableViewController {
         "Keep talking"
     ]
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
     
     @IBAction func onAddTodoItemPressed(
         _ sender: UIBarButtonItem

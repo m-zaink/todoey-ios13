@@ -55,7 +55,7 @@
         <!--Navigation Controller-->
         <scene sceneID="dIL-0K-z7S">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6m2-8D-3Nr" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="6m2-8D-3Nr" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EkN-Fv-BOJ">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>

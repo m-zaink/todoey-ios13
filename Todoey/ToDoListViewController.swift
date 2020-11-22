@@ -99,11 +99,42 @@ class ToDoListViewController: UITableViewController {
         let deleteAction = UIContextualAction(
             style: .destructive,
             title: "Delete") { (deleteAction, uiView, success) in
-            self.todos.remove(at: indexPath.row)
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-            success(true)
+            
+            let confirmDeleteAlert = UIAlertController(
+                title: "Are you sure you want to delete?",
+                message: self.todos[indexPath.row],
+                preferredStyle: .actionSheet
+            )
+            
+            confirmDeleteAlert.addAction(
+                UIAlertAction(
+                    title: "Yes",
+                    style: .destructive,
+                    handler: { (deleteAction) in
+                        self.todos.remove(at: indexPath.row)
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                        success(true)
+                    }
+                )
+            )
+            
+            confirmDeleteAlert.addAction(
+                UIAlertAction(
+                    title: "No",
+                    style: .cancel,
+                    handler: { (cancelAction) in
+                        success(false)
+                    }
+                )
+            )
+            
+            self.present(
+                confirmDeleteAlert,
+                animated: true,
+                completion: nil
+            )
         }
         
         return UISwipeActionsConfiguration(

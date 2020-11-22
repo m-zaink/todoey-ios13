@@ -16,7 +16,7 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        retrieveToDosFromPersistentStorage()
+        retrieveAllToDosFromPersistentStorage()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
@@ -93,9 +93,28 @@ class ToDoListViewController: UITableViewController {
         }
     }
     
-    func retrieveToDosFromPersistentStorage() {
-        let request: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+    func retrieveAllToDosFromPersistentStorage() {
+        let allToDosRequest: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+        retrieveToDosFromPersistentStorage(request: allToDosRequest)
+    }
+    
+    func retrieveAllToDosFromPersistentStroage(baseOn searchWord: String) {
+        let searchQueryRequest: NSFetchRequest<ToDo> = ToDo.fetchRequest()
         
+        searchQueryRequest.predicate = NSPredicate(
+            format: "title CONTAINS[cd] %@",
+            searchWord
+        )
+        
+        searchQueryRequest.sortDescriptors = [
+            NSSortDescriptor(key: "title", ascending: true)
+        ]
+        
+        retrieveToDosFromPersistentStorage(request: searchQueryRequest)
+    }
+    
+    func retrieveToDosFromPersistentStorage(request: NSFetchRequest<ToDo>) {
+
         do {
             todos = try context.fetch(request)
         } catch {
@@ -143,6 +162,10 @@ extension ToDoListViewController {
             at: [indexPath],
             with: .none
         )
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        view.endEditing(true)
     }
     
     override func tableView(
@@ -201,8 +224,23 @@ extension ToDoListViewController {
     }
 }
 
-extension String {
-    var isNotEmpty: Bool {
-        return !isEmpty
+extension ToDoListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let searchWord = searchBar.text, searchWord.isNotEmpty {
+            retrieveAllToDosFromPersistentStroage(baseOn: searchWord)
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        retrieveAllToDosFromPersistentStorage()
+        DispatchQueue.main.async {
+            searchBar.resignFirstResponder()
+            searchBar.text = ""
+            self.tableView.reloadData()
+        }
     }
 }
+

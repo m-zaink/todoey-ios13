@@ -235,4 +235,87 @@ extension CategoryListViewController {
             ]
         )
     }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let editAction = UIContextualAction(
+            style: .normal,
+            title: "Edit"
+        ) { (editAction, uiView, success) in
+            
+            var categoryTextField: UITextField?
+            
+            let editCategoryNameAlert = UIAlertController(
+                title: "Edit Category",
+                message: "",
+                preferredStyle: .alert
+            )
+            
+            editCategoryNameAlert.addTextField { (textField) in
+                textField.placeholder = "ToDo goes here"
+                textField.text = self.categories[indexPath.row].name
+                textField.autocapitalizationType = .sentences
+                textField.returnKeyType = .done
+                categoryTextField = textField
+            }
+            
+            editCategoryNameAlert.addAction(
+                UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: {
+                        (_) in
+                        success(false)
+                    }
+                )
+            )
+            
+            editCategoryNameAlert.addAction(
+                UIAlertAction(
+                    title: "Update ToDo",
+                    style: .default,
+                    handler: {
+                        (_) in
+                        
+                        if let categoryName = categoryTextField?.text, categoryName.isNotEmpty {
+                            self.categories[indexPath.row].name = categoryName
+    
+                            self.commitCategoriesInPersistentStorage()
+                            
+                            success(true)
+                            
+                            self.tableView.reloadRows(
+                                at: [indexPath],
+                                with: .automatic
+                            )
+                            
+                            self.tableView.scrollToRow(
+                                at: indexPath,
+                                at: .top,
+                                animated: true
+                            )
+                        } else {
+                            success(false)
+                        }
+                    }
+                )
+            )
+            
+            self.present(
+                editCategoryNameAlert,
+                animated: true,
+                completion: nil
+            )
+        }
+        
+        editAction.backgroundColor = .systemBlue
+        
+        return UISwipeActionsConfiguration(
+            actions: [
+                editAction
+            ]
+        )
+    }
 }

@@ -1,3 +1,4 @@
+
 //
 //  ViewController.swift
 //  Todoey
@@ -28,23 +29,23 @@ class ToDoListViewController: UITableViewController {
     @IBAction func onAddTodoItemPressed(
         _ sender: UIBarButtonItem
     ) {
-        var todoTextField: UITextField?
+        var toDoTextField: UITextField?
         
-        let addToDoItemAlert = UIAlertController(
+        let addToDoAlert = UIAlertController(
             title: "Add a ToDoey Item",
             message: "",
             preferredStyle: .alert
         )
         
-        addToDoItemAlert.addTextField {
+        addToDoAlert.addTextField {
             (textField) in
             textField.placeholder = "ToDo goes here"
             textField.autocapitalizationType = .sentences
             textField.returnKeyType = .done
-            todoTextField = textField
+            toDoTextField = textField
         }
         
-        addToDoItemAlert.addAction(
+        addToDoAlert.addAction(
             UIAlertAction(
                 title: "Cancel",
                 style: .cancel,
@@ -52,14 +53,14 @@ class ToDoListViewController: UITableViewController {
             )
         )
         
-        addToDoItemAlert.addAction(
+        addToDoAlert.addAction(
             UIAlertAction(
                 title: "Add ToDo",
                 style: .default,
                 handler: {
                     (addTodoAction) in
                     
-                    if let todoTitle = todoTextField?.text, todoTitle.isNotEmpty {
+                    if let todoTitle = toDoTextField?.text, todoTitle.isNotEmpty {
                         let todo = ToDo(context: self.context)
                         
                         todo.title = todoTitle
@@ -90,7 +91,7 @@ class ToDoListViewController: UITableViewController {
         )
         
         present(
-            addToDoItemAlert,
+            addToDoAlert,
             animated: true,
             completion: nil
         )
@@ -202,7 +203,8 @@ extension ToDoListViewController {
     ) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive,
-            title: "Delete") { (deleteAction, uiView, success) in
+            title: "Delete"
+        ) { (deleteAction, uiView, success) in
             
             let confirmDeleteAlert = UIAlertController(
                 title: "Are you sure you want to delete this ToDo?",
@@ -247,6 +249,89 @@ extension ToDoListViewController {
         return UISwipeActionsConfiguration(
             actions: [
                 deleteAction
+            ]
+        )
+    }
+    
+    override func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let editAction = UIContextualAction(
+            style: .normal,
+            title: "Edit"
+        ) { (editAction, uiView, success) in
+            
+            var toDoTextField: UITextField?
+            
+            let editToDoTitleAlert = UIAlertController(
+                title: "Edit ToDo",
+                message: "",
+                preferredStyle: .alert
+            )
+            
+            editToDoTitleAlert.addTextField { (textField) in
+                textField.placeholder = "ToDo goes here"
+                textField.text = self.todos[indexPath.row].title
+                textField.autocapitalizationType = .sentences
+                textField.returnKeyType = .done
+                toDoTextField = textField
+            }
+            
+            editToDoTitleAlert.addAction(
+                UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: {
+                        (_) in
+                        success(false)
+                    }
+                )
+            )
+            
+            editToDoTitleAlert.addAction(
+                UIAlertAction(
+                    title: "Update ToDo",
+                    style: .default,
+                    handler: {
+                        (_) in
+                        
+                        if let todoTitle = toDoTextField?.text, todoTitle.isNotEmpty {
+                            self.todos[indexPath.row].title = todoTitle
+    
+                            self.commitToDosInPersistentStorage()
+                            
+                            success(true)
+                            
+                            self.tableView.reloadRows(
+                                at: [indexPath],
+                                with: .automatic
+                            )
+                            
+                            self.tableView.scrollToRow(
+                                at: indexPath,
+                                at: .top,
+                                animated: true
+                            )
+                        } else {
+                            success(false)
+                        }
+                    }
+                )
+            )
+            
+            self.present(
+                editToDoTitleAlert,
+                animated: true,
+                completion: nil
+            )
+        }
+        
+        editAction.backgroundColor = .systemBlue
+        
+        return UISwipeActionsConfiguration(
+            actions: [
+                editAction
             ]
         )
     }

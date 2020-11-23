@@ -113,7 +113,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="interactivePopGestureRecognizer" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="interactivePopGestureRecognizer.enabled" value="YES"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <segue destination="NcE-SX-3as" kind="relationship" relationship="rootViewController" id="EDU-j2-XYe"/>

@@ -62,7 +62,7 @@ class CategoryListViewController: UITableViewController {
                         
                         self.categories.append(category)
                         
-                        self.commitCategoriesInPersistentStorage()
+                        self.commitChangesToPersistentStorage()
                         
                         let upcomingIndexPath = IndexPath(
                             row: self.categories.count - 1,
@@ -99,13 +99,30 @@ class CategoryListViewController: UITableViewController {
         }
     }
     
-    func commitCategoriesInPersistentStorage() {
+    func commitChangesToPersistentStorage() {
         do {
             if context.hasChanges {
                 try context.save()
             }
         } catch {
             print(error)
+        }
+    }
+
+    
+    func allToDos(withCategoryNaem categoryName: String) -> [ToDo]? {
+        let toDosFetchRequest: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+        
+        toDosFetchRequest.predicate = NSPredicate(
+            format: "parentCategory.name MATCHES %@",
+            categoryName
+        )
+        
+        do {
+            return try context.fetch(toDosFetchRequest)
+        } catch {
+            print(error)
+            return nil
         }
     }
     
@@ -202,7 +219,7 @@ extension CategoryListViewController {
                     handler: { (deleteAction) in
                         self.context.delete(self.categories[indexPath.row])
                         self.categories.remove(at: indexPath.row)
-                        self.commitCategoriesInPersistentStorage()
+                        self.commitChangesToPersistentStorage()
                         success(true)
                         self.tableView.deleteRows(
                             at: [indexPath],
@@ -279,10 +296,14 @@ extension CategoryListViewController {
                     handler: {
                         (_) in
                         
-                        if let categoryName = categoryTextField?.text, categoryName.isNotEmpty {
+                        if let categoryName = categoryTextField?.text, let toDos = self.allToDos(withCategoryNaem: self.categories[indexPath.row].name!), categoryName.isNotEmpty {
                             self.categories[indexPath.row].name = categoryName
-    
-                            self.commitCategoriesInPersistentStorage()
+                            self.commitChangesToPersistentStorage()
+                            
+                            for toDo in toDos {
+                                toDo.parentCategory = self.categories[indexPath.row]
+                            }
+                            
                             
                             success(true)
                             

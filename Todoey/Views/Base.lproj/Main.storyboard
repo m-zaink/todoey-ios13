@@ -89,7 +89,7 @@
                             <outlet property="delegate" destination="5gY-bT-oTX" id="qZ2-3R-ys7"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="rTq-ZV-mfv">
+                    <navigationItem key="navigationItem" id="rTq-ZV-mfv">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="bC0-KJ-H6M">
                             <connections>
                                 <action selector="onAddTodoItemPressed:" destination="5gY-bT-oTX" id="fAb-W9-jOR"/>
@@ -106,8 +106,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6m2-8D-3Nr" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="EkN-Fv-BOJ">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="EkN-Fv-BOJ">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

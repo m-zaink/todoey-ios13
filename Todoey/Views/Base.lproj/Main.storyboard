@@ -32,6 +32,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Todoey" id="Ik2-kT-QwF">
+                        <barButtonItem key="backBarButtonItem" title="Categories" id="uhj-OK-SS0"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="hYZ-78-9ui">
                             <connections>
                                 <action selector="onAddButtonPressed:" destination="NcE-SX-3as" id="4TG-Fd-yeZ"/>

@@ -40,6 +40,7 @@ class ToDoListViewController: UITableViewController {
             (textField) in
             textField.placeholder = "ToDo goes here"
             textField.autocapitalizationType = .sentences
+            textField.returnKeyType = .done
             todoTextField = textField
         }
         

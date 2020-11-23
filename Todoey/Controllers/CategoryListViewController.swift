@@ -36,6 +36,7 @@ class CategoryListViewController: UITableViewController {
             (textField) in
             textField.placeholder = "Category name goes here"
             textField.autocapitalizationType = .sentences
+            textField.returnKeyType = .done
             categoryTextField = textField
         }
         

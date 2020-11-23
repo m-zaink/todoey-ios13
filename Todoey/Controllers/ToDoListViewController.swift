@@ -68,14 +68,20 @@ class ToDoListViewController: UITableViewController {
                         
                         self.commitToDosInPersistentStorage()
                         
+                        let upcomingIndexPath = IndexPath(
+                            row: self.todos.count - 1,
+                            section: 0
+                        )
+                        
                         self.tableView.insertRows(
-                            at: [
-                                IndexPath(
-                                    row: self.todos.count - 1,
-                                    section: 0
-                                )
-                            ],
+                            at: [upcomingIndexPath],
                             with: .automatic
+                        )
+                        
+                        self.tableView.scrollToRow(
+                            at: upcomingIndexPath,
+                            at: .top,
+                            animated: true
                         )
                     }
                 }

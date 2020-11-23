@@ -163,15 +163,16 @@ extension ToDoListViewController {
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
+        let toDoCell = tableView.dequeueReusableCell(
             withIdentifier: ToDoListViewController.toDoListCellReuseIdentifier,
             for: indexPath
         )
         
-        cell.textLabel?.text = todos[indexPath.row].title
-        cell.accessoryType = todos[indexPath.row].isDone ? .checkmark : .none
+        toDoCell.textLabel?.text = todos[indexPath.row].title
+        toDoCell.textLabel?.numberOfLines = 0
+        toDoCell.accessoryType = todos[indexPath.row].isDone ? .checkmark : .none
         
-        return cell
+        return toDoCell
     }
 }
 

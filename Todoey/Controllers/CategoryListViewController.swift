@@ -154,6 +154,7 @@ extension CategoryListViewController {
         )
         
         categoryCell.textLabel?.text = categories[indexPath.row].name
+        categoryCell.textLabel?.numberOfLines = 0
         
         return categoryCell
     }
